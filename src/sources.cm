@@ -1,0 +1,29 @@
+(* sources.cm
+ *
+ * COPYRIGHT (c) 2022 John Reppy (http://cs.uchicago.edu/~jhr)
+ * All rights reserved.
+ *)
+
+Library
+
+  structure GSpecParser
+  structure GSpecTree
+  structure Main
+
+is
+
+  $/basis.cm
+  $/smlnj-lib.cm
+  $/ml-lpt-lib.cm
+
+  gspec.lex : ml-ulex
+  gspec.grm : ml-antlr
+
+  error.sml
+  gspec-parser.sml
+  gspec-tree.sml
+  latex-util.sml
+  main.sml
+  render-fn.sml
+  render-adoc.sml
+  render-latex-grammar.sml

@@ -1,0 +1,80 @@
+(* gspec.grm
+ *
+ * COPYRIGHT (c) 2022 John Reppy (http://cs.uchicago.edu/~jhr)
+ * All rights reserved.
+ *)
+
+%name GSpec;
+
+%start File;
+
+%tokens
+  : KW_empty                    ("empty")
+  | LP                          ("(")
+  | RP                          (")")
+  | LCB                         ("{")
+  | RCB                         ("}")
+  | COLON                       (":")
+  | BAR                         ("|")
+  | QMARK                       ("?")
+  | STAR                        ("*")
+  | PLUS                        ("+")
+  | LABEL of Atom.atom          (* '[' identifier ']' *)
+  | NONTERM of Atom.atom        (* '<' identifier '>' *)
+  | TERM of Atom.atom           (* '"' identifier '"' *)
+  | LIT of string               (* ''' identifier ''' *)
+  | POST_NOTE of string         (* '#<' ... <EOL> *)
+  ;
+
+%defs (
+  structure T = GSpecTree
+);
+
+File
+        : Section+
+                => (Section)
+        ;
+
+Section
+        : LABEL "{" Content "}"
+                => (Content LABEL)
+        ;
+
+Content
+        : Section+
+                => (fn lab => T.Container(lab, Section))
+        | Rule+
+                => (fn lab => T.Sect(lab, Rule))
+        ;
+
+Rule
+        : LABEL? NONTERM ":" RHS ( "|" RHS )*
+                => (T.Rule{label = LABEL, lhs = NONTERM, rhs = RHS :: SR})
+        ;
+
+RHS
+        : LABEL? "empty" POST_NOTE?
+                => (T.RHS{label = LABEL, spec = [], note = POST_NOTE})
+        | LABEL? Phrase+ POST_NOTE?
+                => (T.RHS{label = LABEL, spec = Phrase, note = POST_NOTE})
+        ;
+
+Phrase  : Symbol MultOp?
+                => (case MultOp of SOME m => T.Group([Symbol], m) | _ => Symbol)
+        | "(" Phrase+ ")" MultOp
+                => (T.Group(Phrase, MultOp))
+        ;
+
+Symbol  : NONTERM
+                => (T.Nonterm NONTERM)
+        | TERM
+                => (T.Term TERM)
+        | LIT
+                => (T.Lit LIT)
+        ;
+
+MultOp
+        : "?"   => (T.ZeroOrOne)
+        | "*"   => (T.ZeroOrMore)
+        | "+"   => (T.OneOrMore)
+        ;
