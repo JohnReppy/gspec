@@ -27,6 +27,7 @@ Asciidoc).
 The following grammar (specified using the above notation) describes the
 syntax of grammar specs:
 
+````
 [gspec] {
   <spec>  : <rule-group>+
           | <rule>+
@@ -50,6 +51,7 @@ syntax of grammar specs:
 
   <repeat> " '?' | '*' | '+'
 }
+````
 
 ## Rule Groups
 
