@@ -1,0 +1,232 @@
+# standard-ml.gspec
+#
+# COPYRIGHT (c) 2022 John Reppy (http://cs.uchicago.edu/~jhr)
+# All rights reserved.
+#
+# A "refined" grammar for Standard ML.  This grammar is more restrictive than the
+# grammar of the "Definitin of Standard ML (Revised)" in that it rules out various
+# non-sensical terms.
+
+# file/program grammar
+#
+[file] {
+  <file> : <progdec>+
+
+  <progdec> : <topdec>
+            | <exp> ';'
+}
+
+# module-language grammar
+#
+[module] {
+  <topdec> : <sigdec> ';'?
+           | <strdec> ';'?
+           | <fundec> ';'?
+
+  <sigdec> : 'signature' <sigbind> ( 'and' <sigbind> )*
+
+  <sigbind> : "sigid" '=' <sigexp>
+
+  <sigexp> : 'sig' <specs> 'end'
+           | "sigid"
+           | <sigexp> <wheretype>
+
+  <wheretype> : 'where' 'type' <wheretypespec> ( 'and' <wheretypespec> )*
+
+  <wheretypespec> : <tyvarseq> "tycon" '=' <ty>
+
+  <tyvarseq> : empty
+             | "tyvar"
+             | '(' "tyvar" ( ',' "tyvar" )* ')'
+
+  <spec> : 'val' <valdesc> ( 'and' <valdesc> )*
+         | 'type' <typdesc> ( 'and' <typdesc> )*
+         | 'eqtype' <typdesc> ( 'and' <typdesc> )*
+         | 'datatype' <datdesc> ( 'and' <datdesc> )*
+         | 'datatype' "tycon" '=' 'datatype' "longtycon"
+         | 'exception' <exdesc> ( 'and' <exdesc> )*
+         | 'structure' <strdesc> ( 'and' <strdesc> )*
+         | 'include' <sigexp>
+         | 'include' "sigid"+
+         | <spec> <sharingspec>
+
+  <sharingspec> : 'sharing' 'type' "longtycon" ( '=' "longtycon" )+
+                | 'sharing' "longstrid" ( '=' "longstrid" )+
+
+  <specs> : ( <spec> ';'? )*
+
+  <valdesc> : "vid" ':' <ty>
+
+  <typdesc> : <tyvarseq> "tycon"
+
+  <datdesc> : <tyvarseq> "tycon" '=' <condesc> ( '|' <condesc> )*
+
+  <condesc> : "conid" ( 'of' <ty> )?
+
+  <exdesc> : "conid" ( 'of' <ty> )?
+
+  <strdesc> : "strid" ':' <sigexp>
+
+  <strdec> : <dec>
+           | 'structure' <strbind> ( 'and' <strbind> )*
+           | 'local' <strdecs> 'in' <strdecs> 'end'
+
+  <strdecs> : ( <strdec> ';' )*
+
+  <strbind> : "strid" <sigconstraint>? '=' <strexp>
+
+  <sigconstraint> : ':' <sigexp>
+                  | ':>' <sigexp>
+
+  <strexp> : 'struct' <strdecs> 'end'
+           | "longstrid"
+           | <strexp> <sigconstraint>
+           | "funid" '(' <functorarg> ')'
+           | 'let' <strdecs> 'in' <strexp> 'end'
+
+  <functorarg> : <strdecs>
+               | <strexp>
+
+  <fundec> : 'functor' <funbind> ( 'and' <funbind> )*
+
+  <funbind> : "funid" '(' <functorparam> ')' <sigconstraint>? '=' <strexp>
+
+  <functorparam> : <strid> ':' <sigexp>
+                 | <specs>
+}
+
+# core-language grammar
+#
+[core] {
+
+  [declarations] {
+    <dec> : 'val' <tyvarseq> 'rec'? <valbind> ( 'and' <valbind> )*
+          | 'fun' <tyvarseq> <fvalbind> ( 'and' <fvalbind> )*
+          | 'type' <typbind> ( 'and' <typbind> )*
+          | 'datatype' <datbind> ( 'and' <datbind> )* <withtype>?
+          | 'datatype' "tycon" '=' 'datatype' "longtycon"
+          | 'abstype' <datbind> <withtype>? 'with' <decs> 'end'
+          | 'exception' <exbind> ( 'and' <exbind> )*
+          | 'local' <decs> 'in' <decs> 'end'
+          | 'open' "longstrid"+
+          | 'infix' "precedence"? "valid"+
+          | 'infixr' "precedence"? "valid"+
+          | 'nofix' "valid"+
+
+    <decs> :  ( <dec> ';'? )*
+
+    <valbind> : <pat> '=' <exp>
+
+    <fvalbind> : <fvalrule> ( '|' <fvalrule> )*
+
+    <fvalrule> : 'op'? "vid" <atpat>+ ( ':' <ty> )? '=' <exp>
+               | '(' <atpat> "vid" <atpat> ')' <atpat>+ ( ':' <ty> )? '=' <exp>
+               | '(' <atpat> "vid" <atpat> ')' ( ':' <ty> )? '=' <exp>
+               | <atpat> "vid" <atpat> ( ':' <ty> )? '=' <exp>
+
+    <typbind> : <tyvarseq> "tycon" '=' <ty>
+
+    <datbind> : <tyvarseq> "tycon" '=' <conbind> ( '|' <conbind> )*
+
+    <conbind> : 'op'? "vid" ( 'of' <ty> )?
+
+    <withtype> : 'withtype' <typbind> ( 'and' <typbind> )*
+
+    <exbind> : <conbind>
+             | "vid" '=' "longvid"          #< note that we removed 'op'? from both sides
+  }
+
+  [types] {
+    <ty> : <tuplety> ( '->' <ty> )?
+
+    <tuplety> : <atty> ( '*' <atty> )*
+
+    <atty> : "tyvar"
+          | '(' <ty> ')'
+          | <tyseq> "longtycon"
+          | '{' <tyrow>? '}'
+
+    <tyseq> : empty
+            | <atty>
+            | '(' <ty> ( ',' <ty> )* ')'
+
+    <tyrow> : "lab" ':' <ty> ( ',' <tyrow> )?
+  }
+
+  [patterns] {
+    <pat> : 'op'? "vid" ( ':' <ty> )? 'as' <pat>
+          | <infpat> ':' <ty>
+
+    <infpat> : <infpat> "vid" <infpat>
+             | <conpat>
+
+    <conpat> : 'op'? <longvid> <atpat>
+             | <atpat>
+
+    <atpat> : '_'
+            | <exactlit>
+            | 'op'? <longvid>
+            | '{' <patrow>? '}'
+            | '(' <patseq> ')'
+            | '[' <patseq> ']'
+
+    <patrow> : '...'
+             | <fieldpat> ( ',' <patrow> )?
+
+    <fieldpat> : "vid" ( ':' <ty> )? ( 'as' <pat> )?
+               | "lab" '=' <pat>
+
+    <patseq> : empty
+             | <pat> ( ',' <pat> )*
+  }
+
+  [expressions] {
+    <exp> : 'fn' <match>
+          | 'case' <exp> 'of' <match>
+          | 'while' <exp> 'do' <exp>
+          | 'if' <exp> 'then' <exp> 'else' <exp>
+          | 'raise' <exp>
+          | <handleexp>
+
+    <handleexp> : <orexp> ( 'handle' <match> )*
+
+    <orexp> : <andexp> ( 'orelse' <andexp> )*
+
+    <andexp> : <tyexp> ( 'andalso' <tyexp> )*
+
+    <tyexp> : <infexp> ( ':' <ty> )*
+
+    <infexp> : <infexp> "vid" <infexp>
+             | <appexp>
+
+    <appexp> : <atexp>+
+
+    <atexp> : <lit>
+            | 'op'? "longvid"
+            | '#' "lab"
+            | '{' <exprow>? '}'
+            | '(' <expseq> ')'
+            | '[' <expseq> ']'
+            | '(' <exp> ( ';' <exp> )+ ')'
+            | 'let' <decs> 'in' <exp> ( ';' <exp> )* 'end'
+
+    <exprow> : <fieldexp> ( ',' <fieldexp> )*
+
+    <expseq> : empty
+             | <exp> ( ',' <exp> )*
+
+    <match> : <mrule> ( '|' <mrule> )*
+
+    <mrule> : <pat> '=>' <exp>
+  }
+
+  [literals] {
+    <exactlit> : "chrlit"
+               | "strlit"
+               | "wordlit"
+               | "intlit"
+
+    <lit> : <exactlit>
+          | "reallit"
+  }
+}
