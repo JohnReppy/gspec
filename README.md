@@ -58,11 +58,38 @@ syntax of grammar specs:
 }
 ```
 
-## Rule Groups
+## Grammar Sections
 
-A specification is either a sequence of CFG rules or a sequence
-of rule groups, where each rule group is a named sequence of
-CFG rules.
+A grammar can be specified as a sequence of CFG rules or as
+a heirarchy of labeled sections, where the innermost sections
+contain CFG rules.
 
-Rule groups provide a mechanism for splitting a specification across
-multiple output files.
+Sections provide a mechanism for splitting a specification across
+multiple output files.  For example, if we have a grammar specification
+in the file `lang.gspec` that has the following structure
+
+```
+section foo {
+  section bar { ... }
+  section baz { ... }
+}
+```
+
+then there will be two output files generated: `lang-foo-bar.out` and
+`lang-foo-baz.out` (where `out` is the file suffix for the target format).
+
+## Targets
+
+We currently envision three targets for the `gspec` tool (of which two
+are currently implemented).  These are
+
+* LaTeX using the `grammar.sty` file that is provided in the `support`
+  directory
+
+* LaTeX using the `syntax.sty` package that comes with most
+  TeX distributions. (not yet implemented)
+
+* HTML via **asciidoctor**.  This target produces Asciidoc files that
+  can be used to generate HTML.  The `grammar.css` support file defines
+  styles for the different kinds of grammar symbols.
+
