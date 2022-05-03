@@ -31,13 +31,8 @@
 );
 
 File
-        : Section+
-                => (Section)
-        ;
-
-Section
-        : LABEL "{" Content "}"
-                => (Content LABEL)
+        : Content
+                => (Content T.rootLabel)
         ;
 
 Content
@@ -45,6 +40,11 @@ Content
                 => (fn lab => T.Container(lab, Section))
         | Rule+
                 => (fn lab => T.Sect(lab, Rule))
+        ;
+
+Section
+        : LABEL "{" Content "}"
+                => (Content LABEL)
         ;
 
 Rule

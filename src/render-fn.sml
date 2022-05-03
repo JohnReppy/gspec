@@ -113,7 +113,12 @@ functor RenderSpecFn (R : RENDER) : sig
             List.app (renderSection path) spec
           end
 
-    fun render (true, path, gspec) = renderToFile (path, collect gspec)
-      | render (false, path, gspec) = renderSections (path, gspec)
+    fun render (flatten, path, gspec) = (case gspec
+	   of T.Container(_, sects) =>
+                if flatten
+                  then renderToFile (path, collect sects)
+                  else renderSections (path, sects)
+            | T.Sect(_, rules) => renderToFile (path, rules)
+          (* end case *))
 
   end

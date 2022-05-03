@@ -12,6 +12,9 @@ structure GSpecTree =
     type term = Atom.atom
     type lit = string
 
+  (* the label of the root section *)
+    val rootLabel = Atom.atom ""
+
     datatype section
       = Container of label * section list
       | Sect of label * rule list
@@ -36,7 +39,7 @@ structure GSpecTree =
 
     and multiplicity = ZeroOrOne | ZeroOrMore | OneOrMore
 
-    type grammar_spec = section list
+    type grammar_spec = section
 
     val labelToString : label -> string = Atom.toString
     val nontermToString : nonterm -> string = Atom.toString

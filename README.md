@@ -22,36 +22,42 @@ Asciidoc).
 
 * labels are identifiers enclosed in `[` `]`
 
+* comments start with the `#` character and run to the end of the
+  current line.  There is a special form of a comment, called a
+  *note*, that starts with the characters `#<` and which is attached
+  to the proceeding production.
+
 ## Syntax
 
 The following grammar (specified using the above notation) describes the
 syntax of grammar specs:
 
-````
+```
 [gspec] {
-  <spec>  : <rule-group>+
-          | <rule>+
+  <spec>    : <section>+
+            | <rule>+
 
-  <rule-group> : "label" '{' <rule>+ '}'
+  <content> : <section>+
+            | <rule>+
 
-  <rule>  : "non-term" ':' <rhs> ( '|' <rhs> )* "blank-line"
+  <section> : "label" '{' <content> '}'
 
-  <rhs>   : 'empty' <comment>?
-          | <item>* <comment>?
+  <rule>    : "label"? "non-term" ':' <rhs> ( '|' <rhs> )*
 
-  <comment> : '#{' "text" '}'
+  <rhs>     : "label"? 'empty' "note"?
+            | "label"? <phrase>+ "note"?
 
-  <item>  : <symbol>
-          | <symbol> <repeat>
-          | '(' <item>+ ')' <repeat>
+  <phrase>  : <symbol>
+            | <symbol> <repeat>
+            | '(' <phrase>+ ')' <repeat>
 
-  <symbol> : "literal"
-           | "term-id"
-           | "non-term"
+  <symbol>  : "non-terminal"
+            | "terminal"
+            | "literal"
 
-  <repeat> " '?' | '*' | '+'
+  <repeat>  " '?' | '*' | '+'
 }
-````
+```
 
 ## Rule Groups
 
