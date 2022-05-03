@@ -157,7 +157,7 @@
     <pat> : 'op'? "vid" ( ':' <ty> )? 'as' <pat>
           | <infpat> ':' <ty>
 
-    <infpat> : <conpat> ( "vid" <infpat> )*
+    <infpat> : <conpat> ( "vid" <conpat> )*
 
     <conpat> : 'op'? <longvid> <atpat>
              | <atpat>
@@ -195,7 +195,7 @@
 
     <tyexp> : <infexp> ( ':' <ty> )*
 
-    <infexp> : <appexp> ( "vid" <infexp> )*
+    <infexp> : <appexp> ( "vid" <appexp> )*
 
     <appexp> : <atexp>+
 
