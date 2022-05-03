@@ -1,0 +1,38 @@
+@import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700";
+@import "https://cdn.jsdelivr.net/gh/asciidoctor/asciidoctor@2.0/data/stylesheets/asciidoctor-default.css";
+
+table.grammar {
+  color: darkgreen;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.grammar > td {
+  margin: 0;
+}
+span.nt {
+  color: maroon;
+  font-style: italic;
+  text-decoration: none;
+}
+span.empty {
+  color: darkgreen;
+  font-style: italic;
+  text-decoration: none;
+}
+span.term {
+  color: blue;
+  font-style: italic;
+}
+span.kw, span.sym {
+  color: darkblue;
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 120%;
+}
+table.grammar a:link {
+  text-decoration: none;
+}
+table.grammar a:visited {
+  text-decoration: none;
+}
