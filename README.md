@@ -34,8 +34,7 @@ syntax of grammar specs:
 
 ```
 [gspec] {
-  <spec>    : <section>+
-            | <rule>+
+  <spec>    : <content>
 
   <content> : <section>+
             | <rule>+
@@ -55,7 +54,7 @@ syntax of grammar specs:
             | "terminal"
             | "literal"
 
-  <repeat>  " '?' | '*' | '+'
+  <repeat>  : " '?' | '*' | '+'
 }
 ```
 
