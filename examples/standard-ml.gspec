@@ -100,7 +100,8 @@
 [core] {
 
   [declarations] {
-    <dec> : 'val' <tyvarseq> 'rec'? <valbind> ( 'and' <valbind> )*
+    <dec> : 'val' <tyvarseq> <valbind> ( 'and' <valbind> )*
+          | 'val' 'rec'? <fnbind> ( 'and' <fnbind> )*
           | 'fun' <tyvarseq> <fvalbind> ( 'and' <fvalbind> )*
           | 'type' <typbind> ( 'and' <typbind> )*
           | 'datatype' <datbind> ( 'and' <datbind> )* <withtype>?
@@ -116,6 +117,8 @@
     <decs> :  ( <dec> ';'? )*
 
     <valbind> : <pat> '=' <exp>
+
+    <fnbind> : <pat> '=' <fnexp>
 
     <fvalbind> : <fvalrule> ( '|' <fvalrule> )*
 
@@ -139,16 +142,18 @@
   [types] {
     <ty> : <tuplety> ( '->' <ty> )?
 
-    <tuplety> : <atty> ( '*' <atty> )*
+    <tuplety> : <tyapp> ( '*' <tyapp> )*
+
+    <tyapp> : <tyarg>+ "longtycon"
+            | <atty>
+
+    <tyarg> : <atty>
+            | '(' <ty> ( ',' <ty> )* ')'
 
     <atty> : "tyvar"
-          | '(' <ty> ')'
-          | <tyseq> "longtycon"
-          | '{' <tyrow>? '}'
-
-    <tyseq> : empty
-            | <atty>
-            | '(' <ty> ( ',' <ty> )* ')'
+           | "longtycon"
+           | '(' <ty> ')'
+           | '{' <tyrow>? '}'
 
     <tyrow> : "lab" ':' <ty> ( ',' <tyrow> )?
   }
@@ -180,12 +185,14 @@
   }
 
   [expressions] {
-    <exp> : 'fn' <match>
+    <exp> : <fnexp>
           | 'case' <exp> 'of' <match>
           | 'while' <exp> 'do' <exp>
           | 'if' <exp> 'then' <exp> 'else' <exp>
           | 'raise' <exp>
           | <handleexp>
+
+    <fnexp> : 'fn' <match>
 
     <handleexp> : <orexp> ( 'handle' <match> )*
 
