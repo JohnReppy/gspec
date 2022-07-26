@@ -14,10 +14,10 @@ Asciidoc).
 * literal terminal symbols: a literal terminal is specified by enclosing
   it in single quote characters; *e.g.*, `'if'`.
 
-* terminal symbols: a symbol name enclosed in double quotes;
+* terminal symbols: a terminal symbol name enclosed in double quotes;
   *e.g.*, `"identifier"`.
 
-* non-terminal symbols: a symbol name enclosed in angle brackets;
+* non-terminal symbols: a non-terminal symbol name enclosed in angle brackets;
   *e.g.*, `<expression>`.
 
 * labels are identifiers enclosed in `[` `]`
