@@ -4,7 +4,7 @@
 # All rights reserved.
 #
 # A "refined" grammar for Standard ML.  This grammar is more restrictive than the
-# grammar of the "Definitin of Standard ML (Revised)" in that it rules out various
+# grammar of the "Definition of Standard ML (Revised)" in that it rules out various
 # non-sensical terms.
 
 # file/program grammar
