@@ -69,9 +69,9 @@ multiple output files.  For example, if we have a grammar specification
 in the file `lang.gspec` that has the following structure
 
 ```
-section foo {
-  section bar { ... }
-  section baz { ... }
+[foo] {
+  [bar] { ... }
+  [baz] { ... }
 }
 ```
 
