@@ -32,6 +32,9 @@ structure LaTeXGrammar : RENDER =
           render ();
           pr (outS, "  \\end{Rules}\n"))
 
+    (* a rule separator is ignored for now *)
+    fun ruleSep outS = ()
+
     fun empty (outS, _, _, _) = pr (outS, "    \\RHS{}\n")
 
     fun rhs (outS, _, _, _) render = (

@@ -26,6 +26,9 @@ signature RENDER =
 
     val rule : out * string option * string -> (unit -> unit) -> unit
 
+    (* render a separator between rules *)
+    val ruleSep : out -> unit
+
   (* render an empty rhs *)
     val empty : out * bool * string option * string option -> unit
     val rhs : out * bool * string option * string option -> (unit -> unit) -> unit
@@ -90,11 +93,13 @@ functor RenderSpecFn (R : RENDER) : sig
                       renderPhrases spec)
                 (* end case *);
                 false)
-          fun renderRule (T.Rule{label, lhs, rhs}) =
+          fun renderRule (T.Rule{label, lhs, rhs}, isFirst) = (
+                if not isFirst then R.ruleSep outS else ();
                 R.rule (outS, label2s label, T.nontermToString lhs) (fn () =>
-                  ignore (List.foldl renderRHS true rhs))
+                  ignore (List.foldl renderRHS true rhs));
+                false)
           in
-            List.app renderRule rules
+            ignore (List.foldl renderRule true rules)
           end
 
     fun renderToFile (path, rules) = let

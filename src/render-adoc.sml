@@ -69,9 +69,12 @@ print(concat["maxLHS = ", Int.toString maxLHS, ", maxRHS = ", Int.toString maxRH
 
     fun rule (outS, _, lhs) render = (
           prl (outS, [
-              "| [.nt]#", lhs, "#[[nt.", lhs, "]]\n"
+              "| [.lhs-nt]#", lhs, "#[[nt.", lhs, "]]\n"
             ]);
           render ())
+
+    (* a rule separator is a blank line spanning all three columns *)
+    fun ruleSep outS = pr (outS, "3+| [.rule-sep]#{nbsp}#\n")
 
     fun rhsHelper (outS, true) = pr (outS, "| ::=\n")
       | rhsHelper (outS, false) = pr (outS, "|\n| \\|\n")
