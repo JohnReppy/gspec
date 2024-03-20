@@ -171,8 +171,8 @@
             | <exactlit>
             | 'op'? <longvid>
             | '{' <patrow>? '}'
-            | '(' <patseq> ')'
-            | '[' <patseq> ']'
+            | '(' <patseq>? ')'
+            | '[' <patseq>? ']'
 
     <patrow> : '...'
              | <fieldpat> ( ',' <patrow> )?
@@ -180,8 +180,7 @@
     <fieldpat> : "vid" ( ':' <ty> )? ( 'as' <pat> )?
                | "lab" '=' <pat>
 
-    <patseq> : empty
-             | <pat> ( ',' <pat> )*
+    <patseq> : <pat> ( ',' <pat> )*
   }
 
   [expressions] {
@@ -210,15 +209,14 @@
             | 'op'? "longvid"
             | '#' "lab"
             | '{' <exprow>? '}'
-            | '(' <expseq> ')'
-            | '[' <expseq> ']'
+            | '(' <expseq>? ')'
+            | '[' <expseq>? ']'
             | '(' <exp> ( ';' <exp> )+ ')'
             | 'let' <decs> 'in' <exp> ( ';' <exp> )* 'end'
 
     <exprow> : <fieldexp> ( ',' <fieldexp> )*
 
-    <expseq> : empty
-             | <exp> ( ',' <exp> )*
+    <expseq> : <exp> ( ',' <exp> )*
 
     <match> : <mrule> ( '|' <mrule> )*
 
