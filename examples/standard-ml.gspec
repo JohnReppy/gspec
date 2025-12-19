@@ -31,9 +31,9 @@
            | "sigid"
            | <sigexp> <wheretype>
 
-  <wheretype> : 'where' 'type' <wheretypespec> ( 'and' <wheretypespec> )*
+  <wheretype> : 'where' <wheretypespec> ( 'and' <wheretypespec> )*
 
-  <wheretypespec> : <tyvarseq> "tycon" '=' <ty>
+  <wheretypespec> : 'type' <tyvarseq> "tycon" '=' <ty>
 
   <tyvarseq> : empty
              | "tyvar"
