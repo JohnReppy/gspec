@@ -101,7 +101,7 @@
 
   [declarations] {
     <dec> : 'val' <tyvarseq> <valbind> ( 'and' <valbind> )*
-          | 'val' 'rec'? <fnbind> ( 'and' <fnbind> )*
+          | 'val' 'rec' <tyvarseq> <fnbind> ( 'and' <fnbind> )*
           | 'fun' <tyvarseq> <fvalbind> ( 'and' <fvalbind> )*
           | 'type' <typbind> ( 'and' <typbind> )*
           | 'datatype' <datbind> ( 'and' <datbind> )* <withtype>?
@@ -215,6 +215,8 @@
             | 'let' <decs> 'in' <exp> ( ';' <exp> )* 'end'
 
     <exprow> : <fieldexp> ( ',' <fieldexp> )*
+
+    <fieldexp> : "lab" '=' <exp>
 
     <expseq> : <exp> ( ',' <exp> )*
 
