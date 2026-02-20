@@ -127,7 +127,7 @@
 
     <typbind> : <tyvarseq> "tycon" '=' <ty>
 
-    <datbind> : <tyvarseq> "tycon" '=' <conbind> ( '|' <conbind> )*
+    <datbind> : <tyvarseq> "tycon" '=' '|'? <conbind> ( '|' <conbind> )*
 
     <conbind> : 'op'? "vid" ( 'of' <ty> )?
 
